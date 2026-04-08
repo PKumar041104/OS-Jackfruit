@@ -419,12 +419,71 @@ static int run_supervisor(const char *rootfs)
      *   4) spawn the logger thread
      *   5) enter the supervisor event loop
      */
-    fprintf(stderr, "Supervisor mode not implemented yet for base-rootfs: %s\n", rootfs);
+    struct sockaddr_un addr;
 
+    if (mkdir(LOG_DIR, 0755) < 0 && errno != EEXIST) {
+        perror("mkdir logs");
+        bounded_buffer_destroy(&ctx.log_buffer);
+        pthread_mutex_destroy(&ctx.metadata_lock);
+        return 1;
+    }
+
+    ctx.monitor_fd = open("/dev/container_monitor", O_RDWR);
+    if (ctx.monitor_fd < 0) {
+        perror("open /dev/container_monitor");
+        bounded_buffer_destroy(&ctx.log_buffer);
+        pthread_mutex_destroy(&ctx.metadata_lock);
+        return 1;
+    }
+
+    ctx.server_fd = socket(AF_UNIX, SOCK_STREAM, 0);
+    if (ctx.server_fd < 0) {
+        perror("socket");
+        close(ctx.monitor_fd);
+        bounded_buffer_destroy(&ctx.log_buffer);
+        pthread_mutex_destroy(&ctx.metadata_lock);
+        return 1;
+    }
+
+    memset(&addr, 0, sizeof(addr));
+    addr.sun_family = AF_UNIX;
+    strncpy(addr.sun_path, CONTROL_PATH, sizeof(addr.sun_path) - 1);
+
+    unlink(CONTROL_PATH);
+
+    if (bind(ctx.server_fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
+        perror("bind");
+        close(ctx.server_fd);
+        close(ctx.monitor_fd);
+        bounded_buffer_destroy(&ctx.log_buffer);
+        pthread_mutex_destroy(&ctx.metadata_lock);
+        return 1;
+    }
+
+    if (listen(ctx.server_fd, 8) < 0) {
+        perror("listen");
+        close(ctx.server_fd);
+        close(ctx.monitor_fd);
+        unlink(CONTROL_PATH);
+        bounded_buffer_destroy(&ctx.log_buffer);
+        pthread_mutex_destroy(&ctx.metadata_lock);
+        return 1;
+    }
+
+    printf("[INFO] Supervisor started for base-rootfs: %s\n", rootfs);
+    printf("[INFO] Control socket ready at %s\n", CONTROL_PATH);
+
+    while (!ctx.should_stop) {
+        pause();
+    }
+
+    close(ctx.server_fd);
+    close(ctx.monitor_fd);
+    unlink(CONTROL_PATH);
     bounded_buffer_begin_shutdown(&ctx.log_buffer);
     bounded_buffer_destroy(&ctx.log_buffer);
     pthread_mutex_destroy(&ctx.metadata_lock);
-    return 1;
+    return 0;
 }
 
 /*

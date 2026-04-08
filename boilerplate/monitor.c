@@ -65,7 +65,7 @@ static struct class *cl;
  * Returns the Resident Set Size in bytes for the given PID,
  * or -1 if the task no longer exists.
  * --------------------------------------------------------------- */
-static long get_rss_bytes(pid_t pid)
+static __maybe_unused long get_rss_bytes(pid_t pid)
 {
     struct task_struct *task;
     struct mm_struct *mm;
@@ -95,7 +95,7 @@ static long get_rss_bytes(pid_t pid)
  *
  * Log a warning when a process exceeds the soft limit.
  * --------------------------------------------------------------- */
-static void log_soft_limit_event(const char *container_id,
+static __maybe_unused void log_soft_limit_event(const char *container_id,
                                  pid_t pid,
                                  unsigned long limit_bytes,
                                  long rss_bytes)
@@ -110,7 +110,7 @@ static void log_soft_limit_event(const char *container_id,
  *
  * Kill a process when it exceeds the hard limit.
  * --------------------------------------------------------------- */
-static void kill_process(const char *container_id,
+static __maybe_unused void kill_process(const char *container_id,
                          pid_t pid,
                          unsigned long limit_bytes,
                          long rss_bytes)
@@ -245,7 +245,7 @@ static int __init monitor_init(void)
 /* --- Provided: Module Exit --- */
 static void __exit monitor_exit(void)
 {
-    del_timer_sync(&monitor_timer);
+    timer_delete_sync(&monitor_timer);
 
     /* ==============================================================
      * TODO 6: Free all remaining monitored entries.
