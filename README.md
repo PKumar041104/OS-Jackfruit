@@ -1,111 +1,104 @@
-# Multi-Container Runtime
-
-A lightweight Linux container runtime in C with a long-running supervisor and a kernel-space memory monitor.
-
-Read [`project-guide.md`](project-guide.md) for the full project specification.
+# OS Jackfruit Mini Project  
+## User-Space Container Runtime with Kernel-Space Memory Monitoring
 
 ---
 
-## Getting Started
+## 1. Team Information
 
-### 1. Fork the Repository
+**Team Member 1:** Pratham Kumar  
+**SRN:** `<ENTER_SRN>`  
 
-1. Go to [github.com/shivangjhalani/OS-Jackfruit](https://github.com/shivangjhalani/OS-Jackfruit)
-2. Click **Fork** (top-right)
-3. Clone your fork:
+**Team Member 2:** `<ENTER_NAME_IF_ANY>`  
+**SRN:** `<ENTER_SRN_IF_ANY>`  
 
-```bash
-git clone https://github.com/<your-username>/OS-Jackfruit.git
-cd OS-Jackfruit
-```
-
-### 2. Set Up Your VM
-
-You need an **Ubuntu 22.04 or 24.04** VM with **Secure Boot OFF**. WSL will not work.
-
-Install dependencies:
-
-```bash
-sudo apt update
-sudo apt install -y build-essential linux-headers-$(uname -r)
-```
-
-### 3. Run the Environment Check
-
-```bash
-cd boilerplate
-chmod +x environment-check.sh
-sudo ./environment-check.sh
-```
-
-Fix any issues reported before moving on.
-
-### 4. Prepare the Root Filesystem
-
-```bash
-mkdir rootfs-base
-wget https://dl-cdn.alpinelinux.org/alpine/v3.20/releases/x86_64/alpine-minirootfs-3.20.3-x86_64.tar.gz
-tar -xzf alpine-minirootfs-3.20.3-x86_64.tar.gz -C rootfs-base
-
-# Make one writable copy per container you plan to run
-cp -a ./rootfs-base ./rootfs-alpha
-cp -a ./rootfs-base ./rootfs-beta
-```
-
-Do not commit `rootfs-base/` or `rootfs-*` directories to your repository.
-
-### 5. Understand the Boilerplate
-
-The `boilerplate/` folder contains starter files:
-
-| File                   | Purpose                                             |
-| ---------------------- | --------------------------------------------------- |
-| `engine.c`             | User-space runtime and supervisor skeleton          |
-| `monitor.c`            | Kernel module skeleton                              |
-| `monitor_ioctl.h`      | Shared ioctl command definitions                    |
-| `Makefile`             | Build targets for both user-space and kernel module |
-| `cpu_hog.c`            | CPU-bound test workload                             |
-| `io_pulse.c`           | I/O-bound test workload                             |
-| `memory_hog.c`         | Memory-consuming test workload                      |
-| `environment-check.sh` | VM environment preflight check                      |
-
-Use these as your starting point. You are free to restructure the repository however you want — the submission requirements are listed in the project guide.
-
-### 6. Build and Verify
-
-```bash
-cd boilerplate
-make
-```
-
-If this compiles without errors, your environment is ready.
-
-### 7. GitHub Actions Smoke Check
-
-Your fork will inherit a minimal GitHub Actions workflow from this repository.
-
-That workflow only performs CI-safe checks:
-
-- `make -C boilerplate ci`
-- user-space binary compilation (`engine`, `memory_hog`, `cpu_hog`, `io_pulse`)
-- `./boilerplate/engine` with no arguments must print usage and exit with a non-zero status
-
-The CI-safe build command is:
-
-```bash
-make -C boilerplate ci
-```
-
-This smoke check does not test kernel-module loading, supervisor runtime behavior, or container execution.
+**Course:** UE24CS242B - Operating Systems  
+**Institute:** PES University  
+**Project Title:** OS Jackfruit Mini Project  
 
 ---
 
-## What to Do Next
+## 2. Project Overview
 
-Read [`project-guide.md`](project-guide.md) end to end. It contains:
+This project implements a lightweight container runtime in C along with a Linux kernel module for memory monitoring and enforcement. The goal is to build a simplified container system that demonstrates core operating system concepts such as process isolation, namespaces, parent-child supervision, IPC, synchronization, logging pipelines, kernel-user communication, process scheduling, and memory enforcement.
 
-- The six implementation tasks (multi-container runtime, CLI, logging, kernel monitor, scheduling experiments, cleanup)
-- The engineering analysis you must write
-- The exact submission requirements, including what your `README.md` must contain (screenshots, analysis, design decisions)
+The project is divided into two major parts:
 
-Your fork's `README.md` should be replaced with your own project documentation as described in the submission package section of the project guide. (As in get rid of all the above content and replace with your README.md)
+1. **User-space runtime (`engine.c`)**
+   - Starts and maintains a long-running supervisor process
+   - Accepts CLI commands such as `supervisor`, `start`, `run`, `ps`, `logs`, and `stop`
+   - Launches containers using Linux namespaces
+   - Tracks container metadata
+   - Captures container output through a logging pipeline
+   - Communicates with the kernel module through `ioctl`
+
+2. **Kernel-space memory monitor (`monitor.c`)**
+   - Creates the device `/dev/container_monitor`
+   - Accepts monitoring requests from user space
+   - Tracks registered container processes
+   - Checks resident memory periodically
+   - Produces soft-limit warnings
+   - Enforces hard limits by killing offending processes
+
+This project is intentionally close to real OS mechanisms. The containers are not virtual machines. They still share the same host kernel, but they are isolated in terms of PID view, hostname, and mount view using namespaces.
+
+---
+
+## 3. Objectives
+
+The main objectives of this project are:
+
+- To implement a multi-container runtime supervised by one parent process
+- To isolate containers using Linux namespaces and separate root filesystems
+- To provide CLI-based management of containers
+- To implement bounded-buffer-based logging
+- To build a kernel module that monitors and enforces memory usage
+- To demonstrate scheduling behavior using different workloads
+- To connect implementation details with fundamental OS concepts
+
+---
+
+## 4. Repository Structure
+
+```text
+OS-Jackfruit/
+├── boilerplate/
+│   ├── engine.c
+│   ├── monitor.c
+│   ├── monitor_ioctl.h
+│   ├── Makefile
+│   ├── cpu_hog.c
+│   ├── memory_hog.c
+│   ├── io_pulse.c
+│   └── environment-check.sh
+├── screenshots/
+│   ├── Screenshots_1_build_success.png
+│   ├── Screenshots_2_rootfs_setup.png
+│   ├── Screenshots_3_kernel_module.png
+│   ├── Screenshots_4_supervisor_ready.png
+│   ├── Screenshots_5_cpu_hog.png
+│   ├── Screenshots_6_io_pulse.png
+│   ├── Screenshots_7_memory_hog.png
+│   └── Screenshots_8_control_run.png
+├── docs/
+│   └── <report file will be added here>
+├── README.md
+├── project-guide.md
+└── .gitignore
+
+---
+
+## 5. Environment Setup from Scratch
+
+This section explains the setup from the beginning, starting from a clean Ubuntu VM.
+
+
+### 5.1 Recommended environment
+
+- Ubuntu 22.04 or 24.04 VM
+- VMware Workstation / VirtualBox
+- Internet connection
+- Kernel headers matching the running kernel
+- Sudo access
+
+
+### 5.2 Update package list
