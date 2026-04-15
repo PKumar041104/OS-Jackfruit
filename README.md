@@ -475,7 +475,7 @@ This demonstrates CLI control, metadata tracking, and logging.
 **File:** screenshots/Screenshots_6_io_pulse.png
 Shows io_pulse iterations being captured through the logging pipeline.
 
-![Screenshots_6_io_pulse.png](screenshots_6_io_pulse.png)
+![Screenshots_6_io_pulse.png](screenshots/Screenshots_6_io_pulse.png)
 
 **Screenshot 7 — Memory Enforcement**
 
