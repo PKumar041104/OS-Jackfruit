@@ -448,7 +448,7 @@ Shows Alpine rootfs extraction, separate rootfs copies, and workload placement i
 **File:** screenshots/Screenshots_3_kernel_module.png
 Shows successful insmod, lsmod | grep monitor, and /dev/container_monitor.
 
-![Screenshots_3_kernel_module.png](screenshots/Screenshots_3_kernel_module.png)
+![Screenshots_3_kernel_module.png](screenshots/Screenshots_3_kernrl_module.png)
 
 **Screenshot 4** — Supervisor Running
 
