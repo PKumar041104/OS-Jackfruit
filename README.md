@@ -434,20 +434,28 @@ This section maps the captured screenshots to the required demonstrations. The a
 **File:** screenshots/Screenshots_1_build_success.png
 Shows successful make clean and make, demonstrating that the project builds correctly.
 
+![Screenshots_1_build_success.png](Screenshots_1_build_success.png)
+
 **Screenshot 2** — Rootfs Setup
 
 **File:** screenshots/Screenshots_2_rootfs_setup.png
 Shows Alpine rootfs extraction, separate rootfs copies, and workload placement in the appropriate container filesystem.
+
+![Screenshots_2_rootfs_setup.png](Screenshots_2_rootfs_setup.png)
 
 **Screenshot 3** — Kernel Module Loaded
 
 **File:** screenshots/Screenshots_3_kernel_module.png
 Shows successful insmod, lsmod | grep monitor, and /dev/container_monitor.
 
+![Screenshots_3_kernel_module.png](Screenshots_3_kernel_module.png)
+
 **Screenshot 4** — Supervisor Running
 
 **File:** screenshots/Screenshots_4_supervisor_ready.png
 Shows the runtime supervisor active and listening on the control socket.
+
+![Screenshots_4_supervisor_ready.png](Screenshots_4_supervisor_ready.png)
 
 **Screenshot 5** — CPU Workload Execution
 
@@ -460,10 +468,14 @@ Shows:
 
 This demonstrates CLI control, metadata tracking, and logging.
 
+![Screenshots_5_cpu_hog.png](Screenshots_5_cpu_hog.png)
+
 **Screenshot 6** — IO Workload Logging
 
 **File:** screenshots/Screenshots_6_io_pulse.png
 Shows io_pulse iterations being captured through the logging pipeline.
+
+![Screenshots_6_io_pulse.png](Screenshots_6_io_pulse.png)
 
 **Screenshot 7 — Memory Enforcement**
 
@@ -476,6 +488,8 @@ Shows:
 
 This is the strongest proof of memory monitoring and hard-limit kill.
 
+![Screenshots_7_memory_hog.png](Screenshots_7_memory_hog.png)
+
 **Screenshot 8 — Control and Run Mode**
 
 **File:** screenshots/Screenshots_8_control_run.png
@@ -487,6 +501,8 @@ Shows:
 -run
 
 This demonstrates CLI command handling and lifecycle control.
+
+![Screenshots_8_control_run.png](Screenshots_8_control_run.png)
 
 ---
 
