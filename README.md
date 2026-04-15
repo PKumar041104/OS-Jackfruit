@@ -6,10 +6,10 @@
 ## 1. Team Information
 
 **Team Member 1:** Pratham Kumar  
-**SRN:** `<ENTER_SRN>`  
+**SRN:** PES2UG24CS368  
 
-**Team Member 2:** `<ENTER_NAME_IF_ANY>`  
-**SRN:** `<ENTER_SRN_IF_ANY>`  
+**Team Member 2:** Karthik P  
+**SRN:** PES2UG24CS348  
 
 **Course:** UE24CS242B - Operating Systems  
 **Institute:** PES University  
